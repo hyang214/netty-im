@@ -62,8 +62,8 @@ channel的事件：
 + Read, 读事件, 对应于SelectionKey.OP_READ, 表示 buffer 可读.
 + Write, 写事件, 对应于SelectionKey.OP_WRITE, 表示 buffer 可写.
 
-
-
+### 参考文献
+[Java NIO之Selector 浅析](https://blog.csdn.net/u014634338/article/details/82865622)
 
 
 
