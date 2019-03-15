@@ -14,12 +14,14 @@ import java.net.Socket;
  * @since 2019.03.02
  */
 @Slf4j
-public class IOServer {
+public class MyIOServer {
 
     private final static int PORT = 8000;
 
     public static void main(String[] args) throws IOException {
-        // 监听的端口
+        /** 监听的端口
+         * ServerSocket是等待客户端的请求，一旦获得一个连接请求，就创建一个Socket示例来与客户端进行通信。
+         * **/
         ServerSocket serverSocket = new ServerSocket(PORT);
 
         try {

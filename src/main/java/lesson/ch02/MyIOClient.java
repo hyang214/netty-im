@@ -15,9 +15,8 @@ import java.util.Date;
  * @author Hao YANG
  * @since 2019.03.02
  */
-public class IOClient {
-
-    private static Logger log = LoggerFactory.getLogger(IOClient.class);
+@Slf4j
+public class MyIOClient {
 
     private final static String SERVER = "127.0.0.1";
     private final static int PORT = 8000;
