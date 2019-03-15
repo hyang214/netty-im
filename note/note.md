@@ -56,11 +56,13 @@ Buffer:  缓冲区，实际上是一个容器，一个连续数组。Channel提�
 ![channel and buffer](figures/selector.png)
 
 
-channel的事件：
+channel的事件，不同的channel支持的事件是有限，且不一致的，例如ServerSocketChannel只能支持Accept操作，因此需要多个channel配合来进行构建服务，例如：一个ServerSocketChannel接受新请求，并且将其注册到一个新的监听数据写的 SocketChannel上：
 + Connect, 连接事件(TCP 连接), 对应于SelectionKey.OP_CONNECT
 + Accept, 确认事件, 对应于SelectionKey.OP_ACCEPT
 + Read, 读事件, 对应于SelectionKey.OP_READ, 表示 buffer 可读.
 + Write, 写事件, 对应于SelectionKey.OP_WRITE, 表示 buffer 可写.
+
+NIO 模型中通常会有两个线程，每个线程绑定一个轮询器 selector ，一个负责轮询是否有新的连接，一个负责轮询连接是否有数据可读。
 
 ### 参考文献
 [Java NIO之Selector 浅析](https://blog.csdn.net/u014634338/article/details/82865622)
