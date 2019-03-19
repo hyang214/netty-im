@@ -28,7 +28,7 @@ public class MyNettyServer {
                 .handler(new ChannelInitializer() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
-                        log.info("initChannel ch: {}", ch.id());
+                        log.info("parent initChannel ch: {}", ch.id());
                     }
                 })
                 .attr(AttributeKey.newInstance("serverName"), MyNettyServer.class.getSimpleName())
@@ -37,7 +37,7 @@ public class MyNettyServer {
                 .childHandler(new ChannelInitializer() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
-                        log.info("initChannel ch: {}", ch.id());
+                        log.info("children initChannel ch: {}", ch.id());
                     }
                 })
                 .childAttr(AttributeKey.newInstance("childServerName"), MyNettyServer.class.getSimpleName() + "-child")
