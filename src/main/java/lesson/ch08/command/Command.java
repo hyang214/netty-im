@@ -1,22 +1,23 @@
 package lesson.ch08.command;
 
+import lombok.Data;
+
 /**
  * title:
  *
  * @author Hao YANG
  * @since 2019.03.24
  */
-public interface Command {
+@Data
+public class Command<T extends CommandData> {
 
     /**
-     * 返回命令code
-     * @return
+     * 命令
      */
-    byte getCommandCode();
-
+    private byte commandCode;
     /**
-     * 获取数据
-     * @return
+     * 数据
      */
-    Object getData();
+    private T data;
+
 }

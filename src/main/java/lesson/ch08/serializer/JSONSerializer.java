@@ -1,5 +1,7 @@
 package lesson.ch08.serializer;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * title:
  *
@@ -15,11 +17,11 @@ public class JSONSerializer implements Serializer {
 
     @Override
     public byte[] serialize(Object object) {
-        return new byte[0];
+        return JSONObject.toJSONBytes(object);
     }
 
     @Override
     public <T> T deserialize(Class<T> clazz, byte[] bytes) {
-        return null;
+        return JSONObject.parseObject(bytes, clazz);
     }
 }

@@ -3,6 +3,7 @@ package lesson.ch08.packet;
 import lesson.ch08.command.Command;
 import lesson.ch08.serializer.Serializer;
 import lesson.ch08.serializer.SerializerEnum;
+import lombok.Data;
 
 /**
  * title: 抽象 数据包
@@ -10,7 +11,8 @@ import lesson.ch08.serializer.SerializerEnum;
  * @author Hao YANG
  * @since 2019.03.24
  */
-public abstract class PacketV1 extends MagicNumber {
+@Data
+public class PacketV1 extends BasePacket {
     /**
      * 协议版本
      */
@@ -38,4 +40,8 @@ public abstract class PacketV1 extends MagicNumber {
         return command.getCommandCode();
     }
 
+    @Override
+    public byte getVersion() {
+        return VERSION;
+    }
 }
