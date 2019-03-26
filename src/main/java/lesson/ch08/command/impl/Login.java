@@ -5,6 +5,8 @@ import lesson.ch08.utils.HashingUtils;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 /**
  * title:
  *
@@ -13,7 +15,9 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class Login extends CommandData {
+public class Login extends CommandData implements Serializable {
+
+    private final static long serialVersionUID = 1L;
 
     private String username;
 

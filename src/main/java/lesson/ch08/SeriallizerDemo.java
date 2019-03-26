@@ -28,7 +28,8 @@ public class SeriallizerDemo {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-        PacketV1 origin = getLoginPacket();
+
+        PacketV1 origin = getLoginPacket(SerializerEnum.JAVA_DEFAULT);
         log.info("packet: {}", origin);
 
         ByteBuf byteBuf = ProtocolUtil.encode(origin);
@@ -41,7 +42,7 @@ public class SeriallizerDemo {
      * 获取登录命令
      * @return
      */
-    private static PacketV1 getLoginPacket() {
+    private static PacketV1 getLoginPacket(SerializerEnum type) {
         Login data = new Login();
         data.setUsername("hyang");
         data.setPassword("password");
@@ -49,7 +50,7 @@ public class SeriallizerDemo {
         Command<Login> command = new Command<>(CommandEnum.LOGIN.getCode(), data);
 
         PacketV1 packet = new PacketV1();
-        packet.setSerializerType(SerializerEnum.JSON.getType());
+        packet.setSerializerType(type.getType());
         packet.setCommand(command);
 
         return packet;
