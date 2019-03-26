@@ -1,6 +1,7 @@
 package lesson.ch08.command;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * title:
@@ -9,6 +10,7 @@ import lombok.Data;
  * @since 2019.03.24
  */
 @Data
+@ToString
 public class Command<T extends CommandData> {
 
     /**
@@ -20,4 +22,8 @@ public class Command<T extends CommandData> {
      */
     private T data;
 
+    public Command(byte commandCode, T data) {
+        this.commandCode = commandCode;
+        this.data = data;
+    }
 }

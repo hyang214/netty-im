@@ -14,7 +14,7 @@ import java.util.Map;
  */
 @Getter
 public enum SerializerEnum {
-    JSON((byte) 1, "JSON", JSONSerializer.class);
+    JSON((byte) 2, "JSON", JSONSerializer.class);
 
     private byte type;
     private String name;

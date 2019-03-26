@@ -1,7 +1,9 @@
 package lesson.ch08.command.impl;
 
 import lesson.ch08.command.CommandData;
+import lesson.ch08.utils.HashingUtils;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * title:
@@ -10,10 +12,14 @@ import lombok.Data;
  * @since 2019.03.24
  */
 @Data
+@ToString
 public class Login extends CommandData {
 
     private String username;
 
-    private String encodedPW;
+    private String password;
 
+    public void setPassword(String password) {
+        this.password = HashingUtils.sha256(password);
+    }
 }

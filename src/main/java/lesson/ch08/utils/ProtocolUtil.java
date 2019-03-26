@@ -1,4 +1,4 @@
-package lesson.ch08;
+package lesson.ch08.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.ByteBuf;
@@ -27,7 +27,7 @@ public class ProtocolUtil {
      * @return
      * @throws Exception
      */
-    public BasePacket decode(ByteBuf byteBuf) throws Exception {
+    public static BasePacket decode(ByteBuf byteBuf) throws Exception {
         /** 读取 magic number **/
         int magicNumber = byteBuf.readInt();
         if (magicNumber != BasePacket.MAGIC_NUMBER){
@@ -49,23 +49,48 @@ public class ProtocolUtil {
      * @param packet
      * @return
      */
-    public ByteBuf encode(BasePacket packet) {
+    public static ByteBuf encode(BasePacket packet) throws Exception {
         ByteBuf byteBuf = ByteBufAllocator.DEFAULT.ioBuffer();
 
+        /** 写 magic number **/
+        byteBuf.writeInt(BasePacket.MAGIC_NUMBER);
 
+        /** 写版本 **/
+        byteBuf.writeByte(packet.getVersion());
+
+        /** 写序列化算法 **/
+        byteBuf.writeByte(packet.getSerializerType());
+
+        /** 写入命令 **/
+        byteBuf.writeByte(packet.getCommandCode());
+
+        /** 获取数据 **/
+        byte[] data = packet.getData();
+        int length = data.length;
+
+        /** 写数据长度 **/
+        byteBuf.writeInt(length);
+
+        /** 写数据 **/
+        byteBuf.writeBytes(data);
+
+        return byteBuf;
     }
 
     /**
      * 按照 version = 1的结构进行解析
      * @param byteBuf
      */
-    private PacketV1 parseV1(ByteBuf byteBuf) throws Exception {
+    private static PacketV1 parseV1(ByteBuf byteBuf) throws Exception {
         /** 序列化算法标识 **/
         byte serializeAlgorithm = byteBuf.readByte();
 
         /** 构造序列化算法 **/
         SerializerEnum e = SerializerEnum.getByType(serializeAlgorithm);
         Serializer serializer = e.getClazz().newInstance();
+
+        /** 获取命令 **/
+        byte commandCode = byteBuf.readByte();
 
         /** 数据包长度 **/
         int length = byteBuf.readInt();
@@ -74,15 +99,10 @@ public class ProtocolUtil {
         byte[] bytes = new byte[length];
         byteBuf.readBytes(bytes);
 
-        /** 数据反序列化 **/
-        Command command = serializer.deserialize(Command.class, bytes);
-
-        /** 获取命令 **/
-        byte commandCode = command.getCommandCode();
+        Command command;
         if (commandCode == CommandEnum.LOGIN.getCode()) {
-            Login data = (Login) command.getData();
-            log.info("data: {}", JSONObject.toJSONString(data));
-
+            Login data = serializer.deserialize(Login.class, bytes);
+            command = new Command<>(CommandEnum.LOGIN.getCode(), data);
         } else {
             throw new Exception("未知命令");
         }

@@ -21,4 +21,23 @@ public abstract class BasePacket {
      * @return
      */
     public abstract byte getVersion();
+
+    /**
+     * 获取数据
+     * @return
+     * @throws Exception
+     */
+    public abstract byte[] getData() throws Exception;
+
+    /**
+     * 获取序列化算法
+     * @return
+     */
+    public abstract byte getSerializerType();
+
+    /**
+     * 获取命令
+     * @return
+     */
+    public abstract byte getCommandCode();
 }
