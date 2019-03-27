@@ -15,15 +15,11 @@ import java.io.Serializable;
  */
 @Data
 @ToString
-public class Login extends CommandData implements Serializable {
+public class LoginReq extends CommandData implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
     private String username;
 
     private String password;
-
-    public void setPassword(String password) {
-        this.password = HashingUtils.sha256(password);
-    }
 }

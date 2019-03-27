@@ -1,13 +1,13 @@
 package lesson.ch08;
 
-import com.sun.tools.jdi.Packet;
 import io.netty.buffer.ByteBuf;
 import lesson.ch08.command.Command;
 import lesson.ch08.command.CommandEnum;
-import lesson.ch08.command.impl.Login;
+import lesson.ch08.command.impl.LoginReq;
 import lesson.ch08.packet.BasePacket;
 import lesson.ch08.packet.PacketV1;
 import lesson.ch08.serializer.SerializerEnum;
+import lesson.ch08.utils.HashingUtils;
 import lesson.ch08.utils.ProtocolUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,12 +42,12 @@ public class SeriallizerDemo {
      * 获取登录命令
      * @return
      */
-    private static PacketV1 getLoginPacket(SerializerEnum type) {
-        Login data = new Login();
+    public static PacketV1 getLoginPacket(SerializerEnum type) {
+        LoginReq data = new LoginReq();
         data.setUsername("hyang");
-        data.setPassword("password");
+        data.setPassword(HashingUtils.sha256("hyang"));
 
-        Command<Login> command = new Command<>(CommandEnum.LOGIN.getCode(), data);
+        Command<LoginReq> command = new Command<>(CommandEnum.LOGIN_REQ.getCode(), data);
 
         PacketV1 packet = new PacketV1();
         packet.setSerializerType(type.getType());

@@ -1,15 +1,15 @@
 package lesson.ch08.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import lesson.ch08.command.Command;
 import lesson.ch08.command.CommandEnum;
-import lesson.ch08.command.impl.Login;
+import lesson.ch08.command.impl.LoginReq;
 import lesson.ch08.packet.BasePacket;
 import lesson.ch08.packet.PacketV1;
 import lesson.ch08.serializer.Serializer;
 import lesson.ch08.serializer.SerializerEnum;
+import lesson.ch09.command.impl.LoginRes;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -100,9 +100,12 @@ public class ProtocolUtil {
         byteBuf.readBytes(bytes);
 
         Command command;
-        if (commandCode == CommandEnum.LOGIN.getCode()) {
-            Login data = serializer.deserialize(Login.class, bytes);
-            command = new Command<>(CommandEnum.LOGIN.getCode(), data);
+        if (commandCode == CommandEnum.LOGIN_REQ.getCode()) {
+            LoginReq data = serializer.deserialize(LoginReq.class, bytes);
+            command = new Command<>(CommandEnum.LOGIN_REQ.getCode(), data);
+        } else if (commandCode == CommandEnum.LOGIN_RES.getCode()) {
+            LoginRes data = serializer.deserialize(LoginRes.class, bytes);
+            command = new Command<>(CommandEnum.LOGIN_RES.getCode(), data);
         } else {
             throw new Exception("未知命令");
         }

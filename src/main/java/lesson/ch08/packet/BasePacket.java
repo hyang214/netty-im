@@ -1,6 +1,8 @@
 package lesson.ch08.packet;
 
+import lesson.ch08.command.Command;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * title:
@@ -9,6 +11,7 @@ import lombok.Data;
  * @since 2019.03.24
  */
 @Data
+@ToString
 public abstract class BasePacket {
 
     /**
@@ -40,4 +43,10 @@ public abstract class BasePacket {
      * @return
      */
     public abstract byte getCommandCode();
+
+    /**
+     * 获取命令
+     * @return
+     */
+    public abstract Command getCommand();
 }

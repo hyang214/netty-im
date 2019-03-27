@@ -15,6 +15,7 @@ public class Command<T extends CommandData> {
 
     /**
      * 命令
+     * {@link CommandEnum}
      */
     private byte commandCode;
     /**
