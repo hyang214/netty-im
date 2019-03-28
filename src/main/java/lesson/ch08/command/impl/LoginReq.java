@@ -1,7 +1,6 @@
 package lesson.ch08.command.impl;
 
 import lesson.ch08.command.CommandData;
-import lesson.ch08.utils.HashingUtils;
 import lombok.Data;
 import lombok.ToString;
 

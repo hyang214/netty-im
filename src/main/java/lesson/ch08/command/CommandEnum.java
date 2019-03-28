@@ -10,8 +10,13 @@ import lombok.Getter;
  */
 @Getter
 public enum CommandEnum {
+    /** ch08 **/
     LOGIN_REQ((byte) 1, "登录请求"),
+    /** ch09 **/
     LOGIN_RES((byte) 2, "登录响应"),
+    /** ch10 **/
+    MESSAGE_REQ((byte) 3, "消息请求"),
+    MESSAGE_RES((byte) 4, "消息返回"),
     ;
 
     private byte code;
