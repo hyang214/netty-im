@@ -2,8 +2,12 @@ package lesson.ch09.command;
 
 import com.google.common.collect.Maps;
 import lesson.ch08.command.CommandEnum;
-import lesson.ch09.command.handle.CommandHandler;
-import lesson.ch09.command.handle.impl.LoginHandler;
+import lesson.ch09.command.handle.RequestCommandHandler;
+import lesson.ch09.command.handle.impl.LoginReqHandler;
+import lesson.ch10.command.handler.ResponseCommandHandler;
+import lesson.ch10.command.handler.impl.LoginResHandler;
+import lesson.ch10.command.handler.impl.MessageReqHandler;
+import lesson.ch10.command.handler.impl.MessageResHandler;
 
 import java.util.Map;
 
@@ -15,11 +19,17 @@ import java.util.Map;
  */
 public class CommandHandleRoute {
 
-    private static Map<Byte, CommandHandler> handlerMap;
+    private static Map<Byte, RequestCommandHandler> requestHandlerMap;
+    private static Map<Byte, ResponseCommandHandler> responseHandlerMap;
 
     static {
-        handlerMap = Maps.newConcurrentMap();
-        handlerMap.put(CommandEnum.LOGIN_REQ.getCode(), new LoginHandler());
+        requestHandlerMap = Maps.newConcurrentMap();
+        requestHandlerMap.put(CommandEnum.LOGIN_REQ.getCode(), new LoginReqHandler());
+        requestHandlerMap.put(CommandEnum.MESSAGE_REQ.getCode(), new MessageReqHandler());
+
+        responseHandlerMap = Maps.newConcurrentMap();
+        responseHandlerMap.put(CommandEnum.LOGIN_RES.getCode(), new LoginResHandler());
+        responseHandlerMap.put(CommandEnum.MESSAGE_RES.getCode(), new MessageResHandler());
     }
 
     /**
@@ -27,12 +37,24 @@ public class CommandHandleRoute {
      * @param commandCode
      * @return
      */
-    public static CommandHandler getComandHandler(byte commandCode) throws Exception {
-        CommandHandler handler = handlerMap.get(commandCode);
+    public static RequestCommandHandler getRequestCommandHandler(byte commandCode) throws Exception {
+        RequestCommandHandler handler = requestHandlerMap.get(commandCode);
         if (handler == null) {
             throw new Exception("找不到请求对应处理服务");
         }
         return handler;
     }
 
+    /**
+     * 获取命令对应的处理器
+     * @param commandCode
+     * @return
+     */
+    public static ResponseCommandHandler getResponseCommandHandler(byte commandCode) throws Exception {
+        ResponseCommandHandler handler = responseHandlerMap.get(commandCode);
+        if (handler == null) {
+            throw new Exception("找不到请求对应处理服务");
+        }
+        return handler;
+    }
 }

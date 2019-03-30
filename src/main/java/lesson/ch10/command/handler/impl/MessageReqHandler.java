@@ -3,11 +3,8 @@ package lesson.ch10.command.handler.impl;
 import com.google.common.base.Strings;
 import lesson.ch08.command.Command;
 import lesson.ch08.command.CommandEnum;
-import lesson.ch08.command.impl.LoginReq;
-import lesson.ch08.utils.HashingUtils;
 import lesson.ch09.command.ResponseStatus;
-import lesson.ch09.command.handle.CommandHandler;
-import lesson.ch09.command.impl.LoginRes;
+import lesson.ch09.command.handle.RequestCommandHandler;
 import lesson.ch10.command.impl.MessageRes;
 
 import java.util.Scanner;
@@ -18,7 +15,7 @@ import java.util.Scanner;
  * @author Hao YANG
  * @since 2019.03.27
  */
-public class MessageHandler implements CommandHandler {
+public class MessageReqHandler implements RequestCommandHandler {
 
     @Override
     public Command handle(Command command) {

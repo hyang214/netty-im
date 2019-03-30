@@ -10,6 +10,8 @@ import lesson.ch08.packet.PacketV1;
 import lesson.ch08.serializer.Serializer;
 import lesson.ch08.serializer.SerializerEnum;
 import lesson.ch09.command.impl.LoginRes;
+import lesson.ch10.command.impl.MessageReq;
+import lesson.ch10.command.impl.MessageRes;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -106,6 +108,12 @@ public class ProtocolUtil {
         } else if (commandCode == CommandEnum.LOGIN_RES.getCode()) {
             LoginRes data = serializer.deserialize(LoginRes.class, bytes);
             command = new Command<>(CommandEnum.LOGIN_RES.getCode(), data);
+        } else if (commandCode == CommandEnum.MESSAGE_REQ.getCode()) {
+            MessageReq data = serializer.deserialize(MessageReq.class, bytes);
+            command = new Command<>(CommandEnum.MESSAGE_REQ.getCode(), data);
+        } else if (commandCode == CommandEnum.MESSAGE_RES.getCode()) {
+            MessageRes data = serializer.deserialize(MessageRes.class, bytes);
+            command = new Command<>(CommandEnum.MESSAGE_RES.getCode(), data);
         } else {
             throw new Exception("未知命令");
         }

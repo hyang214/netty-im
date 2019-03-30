@@ -1,6 +1,6 @@
 package lesson.ch10.command.impl;
 
-import lesson.ch09.command.BaseResponse;
+import lesson.ch08.command.CommandData;
 import lombok.Data;
 import lombok.ToString;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 @ToString
-public class MessageReq extends BaseResponse implements Serializable {
+public class MessageReq extends CommandData implements Serializable {
 
     private final static long serialVersionUID = 1L;
 

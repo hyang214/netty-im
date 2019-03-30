@@ -18,4 +18,5 @@ public class LoginRes extends BaseResponse implements Serializable {
 
     private final static long serialVersionUID = 1L;
 
+    private String username;
 }

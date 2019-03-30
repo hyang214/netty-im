@@ -1,4 +1,4 @@
-package lesson.ch09;
+package lesson.ch10;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -25,7 +25,7 @@ import java.util.Date;
  * @since 2019.03.19
  */
 @Slf4j
-public class LoginServer {
+public class MessageServer {
 
     public static void main(String[] args) {
 
@@ -43,7 +43,7 @@ public class LoginServer {
                         log.info("parent initChannel ch: {}", ch.id());
                     }
                 })
-                .attr(AttributeKey.newInstance("serverName"), LoginServer.class.getSimpleName())
+                .attr(AttributeKey.newInstance("serverName"), MessageServer.class.getSimpleName())
                 .option(ChannelOption.SO_BACKLOG, 1024)
                 /** children 相关 **/
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
@@ -57,7 +57,7 @@ public class LoginServer {
                                 log.info(new Date() + ": 服务端读到数据: {} " + req);
 
                                 RequestCommandHandler handler = CommandHandleRoute.getRequestCommandHandler(req.getCommandCode());
-                                Command handleResult = handler.handle(req.getCommand());
+                                Command handleResult = handler.handle(req.getCommand(), ch);
 
                                 PacketV1 res = new PacketV1();
                                 res.setSerializerType(SerializerEnum.JSON.getType());
@@ -72,7 +72,7 @@ public class LoginServer {
                         });
                     }
                 })
-                .childAttr(AttributeKey.newInstance("childServerName"), LoginServer.class.getSimpleName() + "-child")
+                .childAttr(AttributeKey.newInstance("childServerName"), MessageServer.class.getSimpleName() + "-child")
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         bind(serverBootstrap);
