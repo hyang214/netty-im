@@ -1,6 +1,10 @@
 package lesson.ch08.command;
 
+import com.google.common.collect.Sets;
 import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * title:
@@ -19,11 +23,27 @@ public enum CommandEnum {
     MESSAGE_RES((byte) 4, "消息返回"),
     ;
 
+    private static Set<Byte> commandSet;
+
+    static {
+        commandSet = Sets.newHashSet();
+        Arrays.stream(CommandEnum.values()).forEach((x)->commandSet.add(x.code));
+    }
+
     private byte code;
     private String name;
 
     CommandEnum(byte code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    /**
+     * 是否包含对应命令
+     * @param code
+     * @return
+     */
+    public static boolean contains(byte code) {
+        return commandSet.contains(code);
     }
 }
