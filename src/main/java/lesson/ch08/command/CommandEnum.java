@@ -1,9 +1,15 @@
 package lesson.ch08.command;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lesson.ch08.command.impl.LoginReq;
+import lesson.ch09.command.impl.LoginRes;
+import lesson.ch10.command.impl.MessageReq;
+import lesson.ch10.command.impl.MessageRes;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,27 +21,34 @@ import java.util.Set;
 @Getter
 public enum CommandEnum {
     /** ch08 **/
-    LOGIN_REQ((byte) 1, "登录请求"),
+    LOGIN_REQ((byte) 1, "登录请求", LoginReq.class),
     /** ch09 **/
-    LOGIN_RES((byte) 2, "登录响应"),
+    LOGIN_RES((byte) 2, "登录响应", LoginRes.class),
     /** ch10 **/
-    MESSAGE_REQ((byte) 3, "消息请求"),
-    MESSAGE_RES((byte) 4, "消息返回"),
+    MESSAGE_REQ((byte) 3, "消息请求", MessageReq.class),
+    MESSAGE_RES((byte) 4, "消息返回", MessageRes.class),
     ;
 
     private static Set<Byte> commandSet;
+    private static Map<Byte, CommandEnum> commandEnumMap;
 
     static {
         commandSet = Sets.newHashSet();
-        Arrays.stream(CommandEnum.values()).forEach((x)->commandSet.add(x.code));
+        commandEnumMap = Maps.newHashMap();
+        Arrays.stream(CommandEnum.values()).forEach((x)->{
+            commandSet.add(x.code);
+            commandEnumMap.put(x.getCode(), x);
+        });
     }
 
     private byte code;
     private String name;
+    private Class<? extends CommandData> clazz;
 
-    CommandEnum(byte code, String name) {
+    CommandEnum(byte code, String name, Class clazz) {
         this.code = code;
         this.name = name;
+        this.clazz = clazz;
     }
 
     /**
@@ -45,5 +58,9 @@ public enum CommandEnum {
      */
     public static boolean contains(byte code) {
         return commandSet.contains(code);
+    }
+
+    public static CommandEnum getByCode(Byte code) {
+        return commandEnumMap.get(code);
     }
 }

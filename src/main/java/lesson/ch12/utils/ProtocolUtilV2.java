@@ -102,8 +102,9 @@ public class ProtocolUtilV2 {
         byte[] bytes = new byte[length];
         byteBuf.readBytes(bytes);
 
-        if (CommandEnum.contains(commandCode)) {
-            CommandData data = serializer.deserialize(LoginReq.class, bytes);
+        CommandEnum ce = CommandEnum.getByCode(commandCode);
+        if (ce != null) {
+            CommandData data = serializer.deserialize(ce.getClazz(), bytes);
             Command command = new Command<>(commandCode, data);
 
             PacketV1 packetV1 = new PacketV1();

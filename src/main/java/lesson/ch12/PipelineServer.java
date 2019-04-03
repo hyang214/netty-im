@@ -1,4 +1,4 @@
-package lesson.ch11;
+package lesson.ch12;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -7,15 +7,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import lesson.ch11.in.InboundHandlerA;
-import lesson.ch11.in.InboundHandlerB;
-import lesson.ch11.in.InboundHandlerC;
-import lesson.ch11.out.OutboundHandlerA;
-import lesson.ch11.out.OutboundHandlerB;
-import lesson.ch11.out.OutboundHandlerC;
+import lesson.ch08.command.Command;
+import lesson.ch08.packet.BasePacket;
+import lesson.ch08.packet.PacketV1;
+import lesson.ch08.serializer.SerializerEnum;
+import lesson.ch08.utils.ProtocolUtil;
+import lesson.ch09.command.CommandHandleRoute;
+import lesson.ch09.command.handle.RequestCommandHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.Charset;
 import java.util.Date;
 
 /**
@@ -28,6 +28,7 @@ import java.util.Date;
 public class PipelineServer {
 
     public static void main(String[] args) {
+
         NioEventLoopGroup parent = new NioEventLoopGroup();
         NioEventLoopGroup children = new NioEventLoopGroup();
 
@@ -48,26 +49,27 @@ public class PipelineServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) throws Exception {
-                       ch.pipeline().addLast(new InboundHandlerA());
-                       ch.pipeline().addLast(new InboundHandlerB());
-                       ch.pipeline().addLast(new InboundHandlerC());
+                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                            @Override
+                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                ByteBuf byteBuf = (ByteBuf) msg;
+                                BasePacket req = ProtocolUtil.decode(byteBuf);
+                                log.info(new Date() + ": 服务端读到数据: {} " + req);
 
-                       ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-                           @Override
-                           public void channelRead(ChannelHandlerContext ctx, Object msg) {
-                               ByteBuf byteBuf = (ByteBuf) msg;
-                               log.info(new Date() + ": 服务端读到数据 -> " + byteBuf.toString(Charset.forName("utf-8")));
+                                RequestCommandHandler handler = CommandHandleRoute.getRequestCommandHandler(req.getCommandCode());
+                                Command handleResult = handler.handle(req.getCommand(), ch);
 
-                               ByteBuf response = ctx.alloc().buffer();
-                               response.writeBytes("Hi, Siri".getBytes(Charset.forName("utf-8")));
-                               ctx.channel().writeAndFlush(response);
-                           }
+                                PacketV1 res = new PacketV1();
+                                res.setSerializerType(SerializerEnum.JSON.getType());
+                                res.setCommand(handleResult);
 
-                       });
+                                ByteBuf resBuf = ProtocolUtil.encode(res);
+                                ByteBuf response = ctx.alloc().buffer();
+                                response.writeBytes(resBuf);
+                                ctx.channel().writeAndFlush(response);
+                            }
 
-                       ch.pipeline().addLast(new OutboundHandlerA());
-                       ch.pipeline().addLast(new OutboundHandlerB());
-                       ch.pipeline().addLast(new OutboundHandlerC());
+                        });
                     }
                 })
                 .childAttr(AttributeKey.newInstance("childServerName"), PipelineServer.class.getSimpleName() + "-child")

@@ -22,7 +22,7 @@ import java.util.Date;
  * @since 2019.03.19
  */
 @Slf4j
-public class PipelineClient {
+public class PipelineTestClient {
 
     public static void main(String[] args) {
         NioEventLoopGroup group = new NioEventLoopGroup();
