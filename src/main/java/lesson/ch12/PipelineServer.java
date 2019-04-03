@@ -1,22 +1,15 @@
 package lesson.ch12;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
-import lesson.ch08.command.Command;
-import lesson.ch08.packet.BasePacket;
-import lesson.ch08.packet.PacketV1;
-import lesson.ch08.serializer.SerializerEnum;
-import lesson.ch08.utils.ProtocolUtil;
-import lesson.ch09.command.CommandHandleRoute;
-import lesson.ch09.command.handle.RequestCommandHandler;
+import lesson.ch12.pipeline.PacketDecoder;
+import lesson.ch12.pipeline.PacketEncoder;
+import lesson.ch12.pipeline.ServerCommandHandler;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Date;
 
 /**
  * title:
@@ -49,27 +42,9 @@ public class PipelineServer {
                 .childHandler(new ChannelInitializer<NioSocketChannel>() {
                     @Override
                     protected void initChannel(NioSocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-                            @Override
-                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                ByteBuf byteBuf = (ByteBuf) msg;
-                                BasePacket req = ProtocolUtil.decode(byteBuf);
-                                log.info(new Date() + ": 服务端读到数据: {} " + req);
-
-                                RequestCommandHandler handler = CommandHandleRoute.getRequestCommandHandler(req.getCommandCode());
-                                Command handleResult = handler.handle(req.getCommand(), ch);
-
-                                PacketV1 res = new PacketV1();
-                                res.setSerializerType(SerializerEnum.JSON.getType());
-                                res.setCommand(handleResult);
-
-                                ByteBuf resBuf = ProtocolUtil.encode(res);
-                                ByteBuf response = ctx.alloc().buffer();
-                                response.writeBytes(resBuf);
-                                ctx.channel().writeAndFlush(response);
-                            }
-
-                        });
+                        ch.pipeline().addLast(new PacketDecoder());
+                        ch.pipeline().addLast(new ServerCommandHandler());
+                        ch.pipeline().addLast(new PacketEncoder());
                     }
                 })
                 .childAttr(AttributeKey.newInstance("childServerName"), PipelineServer.class.getSimpleName() + "-child")
