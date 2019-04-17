@@ -8,7 +8,6 @@ import lesson.ch08.utils.HashingUtils;
 import lesson.ch09.command.ResponseStatus;
 import lesson.ch09.command.handle.RequestCommandHandler;
 import lesson.ch09.command.impl.LoginRes;
-import lesson.ch10.channel.Attributes;
 import lesson.ch10.user.UserInfo;
 import lesson.ch10.utils.LoginUtil;
 
@@ -48,6 +47,9 @@ public class LoginReqHandler implements RequestCommandHandler {
     @Override
     public Command handle(Command command, Channel channel) {
         Command<LoginRes> res = handle(command);
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(res.getData().getUsername());
+        LoginUtil.markAsLogin(channel, userInfo);
         return res;
     }
 }
